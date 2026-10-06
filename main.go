@@ -1,42 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
-// variadic func
-func sumAll(nums ...int) int {
-	total := 0
-
-	for _, currVal := range nums {
-		total += currVal
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
-	return total
+	_, _ = w.Write([]byte("Go net/http server"))
 }
 
 func main() {
-	// 	views := []int{1, 2, 3, 4, 5, 6}
-	//
-	// 	// for range
-	// 	total := 0
-	//
-	// 	for i, v := range views {
-	// 		fmt.Println("day", i, "views", v)
-	// 		total = total + v
-	// 	}
-	//
-	// 	fmt.Println(total)
+	http.HandleFunc("/hello", helloHandler)
 
-	// ages := map[string]int{
-	// 	"animesh": 21,
-	// 	"ujjwal":  20,
-	// }
-	// fmt.Println(ages, ages["animesh"], len(ages))
+	fmt.Println("try going to 8080 port")
 
-	// users := map[string]string{
-	// 	"u1": "sangam",
-	// 	"u2": "john",
-	// 	"u3": "rahul",
-	// }
-	// fmt.Println(users)
-
-	fmt.Println(sumAll(1, 2, 3, 4, 5))
+	err := http.ListenAndServe(":8080", nil)
+	fmt.Println(err)
 }
